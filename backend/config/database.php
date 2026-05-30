@@ -1,13 +1,28 @@
 <?php
 
-class Database {
-    private $host = "db.fxhraymsixzdsjehkrub.supabase.co";
-    private $port = "5432";
-    private $dbname = "postgres";
-    private $username = "postgres";
-    private $password = "stayfinder@123";
+require_once __DIR__ . '/../vendor/autoload.php';
 
-    public function connect() {
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+
+class Database {
+    private $host;
+    private $port;
+    private $dbname;
+    private $username;
+    private $password;
+
+    public function __construct()
+    {
+        $this->host = $_ENV['DB_HOST'];
+        $this->port = $_ENV['DB_PORT'];
+        $this->dbname = $_ENV['DB_NAME'];
+        $this->username = $_ENV['DB_USER'];
+        $this->password = $_ENV['DB_PASSWORD'];
+    }
+
+    public function connect()
+    {
         try {
             $conn = new PDO(
                 "pgsql:host={$this->host};port={$this->port};dbname={$this->dbname};sslmode=require",

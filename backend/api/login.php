@@ -47,7 +47,7 @@ try {
     }
 
     unset($user["password"]);
-
+    $user["role"] = $user["email"] === "admin@stayfinder.com" ? "admin" : "user";
     sendResponse(true, "Login successful", $user);
 
 } catch (PDOException $e) {
