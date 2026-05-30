@@ -1,23 +1,43 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PropertyCard from "../components/property/PropertyCard";
-import {
-  getShortlist,
-  removeFromShortlist,
-} from "../utils/shortlistStorage";
+import { useAuth } from "../context/AuthContext";
+import { getUserShortlist, toggleInterest } from "../api/interestApi";
 
 const Shortlist = () => {
+  const { user } = useAuth();
+
   const [shortlist, setShortlist] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchShortlist = async () => {
+    try {
+      setLoading(true);
+
+      const result = await getUserShortlist(user.id);
+
+      if (result.status) {
+        setShortlist(result.data);
+      }
+    } catch {
+      alert("Unable to load shortlist");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setShortlist(getShortlist());
-  }, []);
+    if (user?.id) {
+      fetchShortlist();
+    }
+  }, [user]);
 
-  const handleRemove = (propertyId) => {
-    removeFromShortlist(propertyId);
+  const handleRemove = async (propertyId) => {
+    const result = await toggleInterest(user.id, propertyId);
 
-    const updatedShortlist = getShortlist();
-    setShortlist(updatedShortlist);
+    if (result.status) {
+      setShortlist((prev) => prev.filter((item) => item.id !== propertyId));
+    }
   };
 
   return (
@@ -36,7 +56,14 @@ const Shortlist = () => {
           </Link>
         </div>
 
-        {shortlist.length > 0 ? (
+        {loading && (
+          <div className="text-center py-5">
+            <div className="spinner-border text-primary"></div>
+            <p className="mt-3 text-muted">Loading shortlist...</p>
+          </div>
+        )}
+
+        {!loading && shortlist.length > 0 && (
           <div className="row g-4 mt-3">
             {shortlist.map((property) => (
               <div className="col-lg-4 col-md-6" key={property.id}>
@@ -51,7 +78,9 @@ const Shortlist = () => {
               </div>
             ))}
           </div>
-        ) : (
+        )}
+
+        {!loading && shortlist.length === 0 && (
           <div className="empty-state mt-4">
             <i className="bi bi-heart"></i>
             <h4>No shortlisted properties yet</h4>

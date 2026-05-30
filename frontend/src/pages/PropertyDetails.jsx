@@ -1,43 +1,102 @@
-import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
-import { properties } from "../data/properties";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import PropertyGallery from "../components/property/PropertyGallery";
 import AmenityBadge from "../components/property/AmenityBadge";
-
-import {
-  addToShortlist,
-  removeFromShortlist,
-  isPropertyShortlisted,
-} from "../utils/shortlistStorage";
+import { getPropertyDetails } from "../api/propertyApi";
+import { useAuth } from "../context/AuthContext";
+import { checkInterest, toggleInterest } from "../api/interestApi";
+import EnquiryForm from "../components/property/EnquiryForm";
 
 const PropertyDetails = () => {
   const { id } = useParams();
-  const property = properties.find((item) => item.id === Number(id));
+  const navigate = useNavigate();
+  const { user, isLoggedIn } = useAuth();
 
-  const [isInterested, setIsInterested] = useState(
-    isPropertyShortlisted(Number(id))
-  );
+  const [property, setProperty] = useState(null);
+  const [isInterested, setIsInterested] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [interestLoading, setInterestLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleInterest = () => {
-    if (isInterested) {
-      removeFromShortlist(property.id);
-      setIsInterested(false);
-    } else {
-      addToShortlist(property);
-      setIsInterested(true);
+  const fetchPropertyDetails = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const result = await getPropertyDetails(id);
+
+      if (result.status) {
+        setProperty(result.data);
+      } else {
+        setError(result.message);
+      }
+    } catch {
+      setError("Unable to fetch property details");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!property) {
+  const fetchInterestStatus = async () => {
+    if (!isLoggedIn || !user?.id) return;
+
+    const result = await checkInterest(user.id, id);
+
+    if (result.status) {
+      setIsInterested(result.data.interested);
+    }
+  };
+
+  useEffect(() => {
+    fetchPropertyDetails();
+  }, [id]);
+
+  useEffect(() => {
+    fetchInterestStatus();
+  }, [id, user]);
+
+  const handleInterest = async () => {
+    if (!isLoggedIn) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setInterestLoading(true);
+
+      const result = await toggleInterest(user.id, property.id);
+
+      if (result.status) {
+        setIsInterested(result.data.interested);
+      }
+    } catch {
+      alert("Interest action failed");
+    } finally {
+      setInterestLoading(false);
+    }
+  };
+
+  if (loading) {
     return (
       <div className="container py-5 text-center">
-        <h2>Property Not Found</h2>
+        <div className="spinner-border text-primary"></div>
+        <p className="mt-3 text-muted">Loading property details...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container py-5 text-center">
+        <h3>{error}</h3>
         <Link to="/properties" className="btn btn-primary mt-3">
           Back to Properties
         </Link>
       </div>
     );
   }
+
+  if (!property) return null;
 
   return (
     <section className="property-details-section py-5">
@@ -48,7 +107,7 @@ const PropertyDetails = () => {
 
         <div className="row g-5 mt-2">
           <div className="col-lg-7">
-            <PropertyGallery images={property.gallery} />
+            <PropertyGallery images={property.gallery || [property.image]} />
           </div>
 
           <div className="col-lg-5">
@@ -65,11 +124,10 @@ const PropertyDetails = () => {
                 <span className="rating-badge">
                   <i className="bi bi-star-fill"></i> {property.rating}
                 </span>
-
                 <span className="text-muted">Verified Property</span>
               </div>
 
-              <h2 className="price-text">₹{property.price}</h2>
+              <h2 className="price-text">₹{Number(property.price)}</h2>
               <p className="text-muted">per month</p>
 
               <hr />
@@ -79,7 +137,7 @@ const PropertyDetails = () => {
 
               <h5 className="fw-bold mt-4">Amenities</h5>
               <div className="details-amenities">
-                {property.amenities.map((item, index) => (
+                {property.amenities?.map((item, index) => (
                   <AmenityBadge key={index} name={item} />
                 ))}
               </div>
@@ -91,23 +149,28 @@ const PropertyDetails = () => {
                     : "btn btn-primary btn-lg w-100 mt-4"
                 }
                 onClick={handleInterest}
+                disabled={interestLoading}
               >
-                {isInterested ? (
-                  <>
-                    <i className="bi bi-heart-fill"></i> Remove Interest
-                  </>
-                ) : (
-                  <>
-                    <i className="bi bi-heart"></i> Mark as Interested
-                  </>
-                )}
+                {interestLoading
+                  ? "Please wait..."
+                  : isInterested
+                  ? "Remove Interest"
+                  : "Mark as Interested"}
               </button>
 
               {isInterested && (
                 <div className="alert alert-success mt-3 mb-0">
-                  Property added to your shortlist successfully.
+                  Property added to your shortlist.
                 </div>
               )}
+
+              {isLoggedIn ? (
+  <EnquiryForm propertyId={property.id} />
+) : (
+  <div className="alert alert-info mt-4">
+    Please login to contact the owner.
+  </div>
+)}
             </div>
           </div>
         </div>

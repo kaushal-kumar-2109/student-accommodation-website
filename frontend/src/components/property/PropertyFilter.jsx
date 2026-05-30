@@ -21,6 +21,7 @@ const PropertyFilter = ({ filters, setFilters, clearFilters }) => {
             <option value="Noida">Noida</option>
             <option value="Delhi">Delhi</option>
             <option value="Gurgaon">Gurgaon</option>
+            <option value="Greater Noida">Greater Noida</option>
           </select>
         </div>
 

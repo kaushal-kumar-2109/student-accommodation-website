@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { signupUser } from "../api/authApi";
 
 const Signup = () => {
   const { login } = useAuth();
@@ -15,6 +16,7 @@ const Signup = () => {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -23,7 +25,7 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (
@@ -42,15 +44,28 @@ const Signup = () => {
       return;
     }
 
-    const demoUser = {
-      id: Date.now(),
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-    };
+    try {
+      setLoading(true);
+      setError("");
 
-    login(demoUser);
-    navigate("/properties");
+      const result = await signupUser({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+      });
+
+      if (result.status) {
+        login(result.data);
+        navigate("/properties");
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      setError("Signup failed. Please check backend server.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -127,8 +142,8 @@ const Signup = () => {
               />
             </div>
 
-            <button className="btn btn-primary w-100 btn-lg">
-              Create Account
+            <button className="btn btn-primary w-100 btn-lg" disabled={loading}>
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 

@@ -7,6 +7,7 @@ import Signup from "../pages/Signup";
 import Shortlist from "../pages/Shortlist";
 import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../components/common/ProtectedRoute";
+import AdminEnquiries from "../pages/AdminEnquiries";
 
 const AppRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
       <Route path="/properties/:id" element={<PropertyDetails />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/admin/enquiries" element={<AdminEnquiries />} />
 
       <Route
         path="/shortlist"

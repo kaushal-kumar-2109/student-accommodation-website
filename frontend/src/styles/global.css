@@ -366,3 +366,17 @@ a {
   place-items: center;
   box-shadow: 0 8px 20px rgba(220, 53, 69, 0.35);
 }
+
+.enquiry-card {
+  background: #f8fafc;
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+}
+.enquiry-table-wrapper {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eef2f7;
+}

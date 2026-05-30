@@ -47,6 +47,12 @@ const Navbar = () => {
                 </NavLink>
               </li>
             )}
+
+            <li className="nav-item">
+  <NavLink className="nav-link" to="/admin/enquiries">
+    Admin
+  </NavLink>
+</li>
           </ul>
 
           <div className="d-flex gap-2 align-items-center">

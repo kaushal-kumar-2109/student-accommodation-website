@@ -1,21 +1,12 @@
 import { Link } from "react-router-dom";
-import { isPropertyShortlisted } from "../../utils/shortlistStorage";
 
 const PropertyCard = ({ property }) => {
-  const shortlisted = isPropertyShortlisted(property.id);
-
   return (
     <div className="property-card">
       <div className="property-img-wrapper">
         <img src={property.image} alt={property.name} className="property-img" />
 
         <span className="gender-badge">{property.gender}</span>
-
-        {shortlisted && (
-          <span className="shortlisted-badge">
-            <i className="bi bi-heart-fill"></i>
-          </span>
-        )}
       </div>
 
       <div className="property-content">
@@ -32,14 +23,14 @@ const PropertyCard = ({ property }) => {
         </p>
 
         <div className="amenity-list">
-          {property.amenities.slice(0, 3).map((item, index) => (
+          {property.amenities?.slice(0, 3).map((item, index) => (
             <span key={index}>{item}</span>
           ))}
         </div>
 
         <div className="d-flex justify-content-between align-items-center mt-4">
           <div>
-            <h5 className="price-text">₹{property.price}</h5>
+            <h5 className="price-text">₹{Number(property.price)}</h5>
             <small className="text-muted">per month</small>
           </div>
 
