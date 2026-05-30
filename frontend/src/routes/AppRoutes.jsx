@@ -8,6 +8,8 @@ import Shortlist from "../pages/Shortlist";
 import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import AdminEnquiries from "../pages/AdminEnquiries";
+import Profile from "../pages/Profile";
+import AdminRoute from "../components/common/AdminRoute";
 
 const AppRoutes = () => {
   return (
@@ -18,7 +20,22 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/admin/enquiries" element={<AdminEnquiries />} />
-
+      <Route
+  path="/admin/enquiries"
+  element={
+    <AdminRoute>
+      <AdminEnquiries />
+    </AdminRoute>
+  }
+/>
+      <Route
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }
+/>
       <Route
         path="/shortlist"
         element={

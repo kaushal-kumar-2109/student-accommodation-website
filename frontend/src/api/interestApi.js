@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const API_URL = "http://localhost:8000/api";
+import { API_URL } from "../config/api";
 
 export const toggleInterest = async (user_id, property_id) => {
   const response = await axios.post(`${API_URL}/toggle-interest.php`, {

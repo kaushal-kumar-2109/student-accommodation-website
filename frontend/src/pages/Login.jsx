@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { loginUser } from "../api/authApi";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const { login } = useAuth();
@@ -37,14 +38,17 @@ const Login = () => {
       const result = await loginUser(formData);
 
       if (result.status) {
-        login(result.data);
-        navigate("/properties");
-      } else {
-        setError(result.message);
-      }
-    } catch (err) {
-      setError("Login failed. Please check backend server.");
-    } finally {
+  login(result.data);
+  toast.success("Login successful");
+  navigate("/properties");
+} else {
+  setError(result.message);
+  toast.error(result.message);
+}
+    } catch {
+  setError("Login failed. Please check backend server.");
+  toast.error("Login failed");
+} finally {
       setLoading(false);
     }
   };

@@ -380,3 +380,59 @@ a {
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
   border: 1px solid #eef2f7;
 }
+.not-found-page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+.pagination-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pagination-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #dbe4ef;
+  background: #ffffff;
+  border-radius: 12px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.pagination-btn.active,
+.pagination-btn:hover {
+  background: #0d6efd;
+  color: #ffffff;
+  border-color: #0d6efd;
+}
+
+.profile-card {
+  max-width: 520px;
+  background: #ffffff;
+  padding: 36px;
+  border-radius: 24px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eef2f7;
+}
+
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #0d6efd;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 38px;
+  font-weight: 800;
+  margin: auto;
+}
+
+.profile-info p {
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}

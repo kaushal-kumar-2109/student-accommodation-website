@@ -3,6 +3,7 @@ const PropertyFilter = ({ filters, setFilters, clearFilters }) => {
     setFilters({
       ...filters,
       [e.target.name]: e.target.value,
+      page: 1,
     });
   };
 
@@ -10,6 +11,18 @@ const PropertyFilter = ({ filters, setFilters, clearFilters }) => {
     <div className="filter-box">
       <div className="row g-3 align-items-end">
         <div className="col-lg-3 col-md-6">
+          <label className="form-label">Search</label>
+          <input
+            type="text"
+            name="search"
+            className="form-control"
+            placeholder="Search by name or location"
+            value={filters.search}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="col-lg-2 col-md-6">
           <label className="form-label">City</label>
           <select
             name="city"
@@ -25,7 +38,7 @@ const PropertyFilter = ({ filters, setFilters, clearFilters }) => {
           </select>
         </div>
 
-        <div className="col-lg-3 col-md-6">
+        <div className="col-lg-2 col-md-6">
           <label className="form-label">Budget</label>
           <select
             name="budget"
@@ -41,7 +54,7 @@ const PropertyFilter = ({ filters, setFilters, clearFilters }) => {
           </select>
         </div>
 
-        <div className="col-lg-3 col-md-6">
+        <div className="col-lg-2 col-md-6">
           <label className="form-label">Gender</label>
           <select
             name="gender"

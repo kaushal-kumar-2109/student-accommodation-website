@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createEnquiry } from "../../api/enquiryApi";
 import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 const EnquiryForm = ({ propertyId }) => {
   const { user } = useAuth();
@@ -37,13 +38,16 @@ const EnquiryForm = ({ propertyId }) => {
       });
 
       if (result.status) {
-        setSuccess(result.message);
-      } else {
-        setError(result.message);
-      }
+  setSuccess(result.message);
+  toast.success("Enquiry submitted successfully");
+} else {
+  setError(result.message);
+  toast.error(result.message);
+}
     } catch {
-      setError("Unable to submit enquiry");
-    } finally {
+  setError("Unable to submit enquiry");
+  toast.error("Unable to submit enquiry");
+} finally {
       setLoading(false);
     }
   };

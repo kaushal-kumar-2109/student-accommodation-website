@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import PropertyCard from "../components/property/PropertyCard";
 import { useAuth } from "../context/AuthContext";
 import { getUserShortlist, toggleInterest } from "../api/interestApi";
+import toast from "react-hot-toast";
 
 const Shortlist = () => {
   const { user } = useAuth();
@@ -20,8 +21,8 @@ const Shortlist = () => {
         setShortlist(result.data);
       }
     } catch {
-      alert("Unable to load shortlist");
-    } finally {
+  toast.error("Unable to load shortlist");
+} finally {
       setLoading(false);
     }
   };
@@ -36,8 +37,9 @@ const Shortlist = () => {
     const result = await toggleInterest(user.id, propertyId);
 
     if (result.status) {
-      setShortlist((prev) => prev.filter((item) => item.id !== propertyId));
-    }
+  setShortlist((prev) => prev.filter((item) => item.id !== propertyId));
+  toast.success("Removed from shortlist");
+}
   };
 
   return (

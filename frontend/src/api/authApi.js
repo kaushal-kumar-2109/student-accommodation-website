@@ -1,13 +1,12 @@
 import axios from "axios";
+import { API_URL } from "../config/api";
 
-const API_URL = "http://localhost:8000/api";
-
-export const signupUser = async (userData) => {
-  const response = await axios.post(`${API_URL}/signup.php`, userData);
+export const signupUser = async (data) => {
+  const response = await axios.post(`${API_URL}/signup.php`, data);
   return response.data;
 };
 
-export const loginUser = async (loginData) => {
-  const response = await axios.post(`${API_URL}/login.php`, loginData);
+export const loginUser = async (data) => {
+  const response = await axios.post(`${API_URL}/login.php`, data);
   return response.data;
 };

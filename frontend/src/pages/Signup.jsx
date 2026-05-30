@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { signupUser } from "../api/authApi";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const { login } = useAuth();
@@ -56,14 +57,17 @@ const Signup = () => {
       });
 
       if (result.status) {
-        login(result.data);
-        navigate("/properties");
-      } else {
-        setError(result.message);
-      }
-    } catch (err) {
-      setError("Signup failed. Please check backend server.");
-    } finally {
+  login(result.data);
+  toast.success("Account created successfully");
+  navigate("/properties");
+} else {
+  setError(result.message);
+  toast.error(result.message);
+}
+    } catch {
+  setError("Signup failed. Please check backend server.");
+  toast.error("Signup failed");
+}finally {
       setLoading(false);
     }
   };

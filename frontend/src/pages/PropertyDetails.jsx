@@ -6,6 +6,7 @@ import { getPropertyDetails } from "../api/propertyApi";
 import { useAuth } from "../context/AuthContext";
 import { checkInterest, toggleInterest } from "../api/interestApi";
 import EnquiryForm from "../components/property/EnquiryForm";
+import toast from "react-hot-toast";
 
 const PropertyDetails = () => {
   const { id } = useParams();
@@ -57,9 +58,10 @@ const PropertyDetails = () => {
 
   const handleInterest = async () => {
     if (!isLoggedIn) {
-      navigate("/login");
-      return;
-    }
+  toast.error("Please login first");
+  navigate("/login");
+  return;
+}
 
     try {
       setInterestLoading(true);
@@ -67,11 +69,17 @@ const PropertyDetails = () => {
       const result = await toggleInterest(user.id, property.id);
 
       if (result.status) {
-        setIsInterested(result.data.interested);
-      }
+  setIsInterested(result.data.interested);
+
+  if (result.data.interested) {
+    toast.success("Property added to shortlist");
+  } else {
+    toast.success("Property removed from shortlist");
+  }
+}
     } catch {
-      alert("Interest action failed");
-    } finally {
+  toast.error("Interest action failed");
+} finally {
       setInterestLoading(false);
     }
   };
